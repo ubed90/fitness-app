@@ -7,6 +7,7 @@ import { Store } from 'store';
 import { AuthModule } from './auth/auth.module';
 import { HeaderComponent } from './components/header/header.component';
 import { NavComponent } from './components/nav/nav.component';
+import { HealthModule } from './health/health.module';
 // import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 // import { environment } from '../environments/environment';
 // import { provideAuth,getAuth } from '@angular/fire/auth';
@@ -22,6 +23,7 @@ import { NavComponent } from './components/nav/nav.component';
     BrowserModule,
     AppRoutingModule,
     AuthModule,
+    HealthModule
     // provideFirebaseApp(() => initializeApp(environment.firebase)),
     // provideAuth(() => getAuth()),
     // provideDatabase(() => getDatabase())

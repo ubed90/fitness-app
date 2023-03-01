@@ -20,6 +20,6 @@ import { SharedModule } from './shared/shared.module';
     AngularFireDatabaseModule,
     SharedModule.forRoot()
   ],
-  exports: [AuthRoutingModule]
+  exports: []
 })
 export class AuthModule { }
