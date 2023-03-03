@@ -8,7 +8,20 @@
       class="btn__add"
       [routerLink]="['../meals/new']">
       <img src="assets/img/add-white.svg">
-      New meal
+      <span>New meal</span>
     </a>
   </div>
+  <div *ngIf="meals$ | async as meals; else loading;">
+    <div class="message" *ngIf="!meals.length">
+      <img src="assets/img/face.svg">
+      No meals, add a new meal to start
+    </div>
+    <!-- meals ngFor -->
+  </div>
+  <ng-template #loading>
+    <div class="message">
+      <img src="assets/img/loading.svg">
+      Fetching meals...
+    </div>
+  </ng-template>
 </div>
