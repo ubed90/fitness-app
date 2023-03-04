@@ -27,7 +27,7 @@ export class WorkoutFormComponent implements OnInit {
 
   form = this.fb.group({
     name: ['', Validators.required],
-    ingredients: this.fb.array([''])
+    type: 'strength'
   })
 
   constructor(private fb: FormBuilder) { }
