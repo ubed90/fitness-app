@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { MealsRoutingModule } from './meals-routing.module';
 import { MealsComponent } from './containers/meals/meals.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { MealComponent } from './containers/meal/meal.component';
 import { MealFormComponent } from './components/meal-form/meal-form.component';
@@ -18,7 +17,6 @@ import { MealFormComponent } from './components/meal-form/meal-form.component';
   imports: [
     CommonModule,
     MealsRoutingModule,
-    ReactiveFormsModule,
     SharedModule
   ]
 })

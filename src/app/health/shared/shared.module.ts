@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { MealsService } from './services/meals/meals.service';
 import { ListItemComponent } from './components/list-item/list-item.component';
+import { WorkoutsService } from './services/workouts/workouts.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -14,15 +16,16 @@ import { ListItemComponent } from './components/list-item/list-item.component';
   imports: [
     CommonModule,
     RouterModule,
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    ReactiveFormsModule
   ],
-  exports: [ListItemComponent]
+  exports: [ListItemComponent, ReactiveFormsModule]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
-      providers: [MealsService]
+      providers: [MealsService, WorkoutsService]
     }
   }
 }

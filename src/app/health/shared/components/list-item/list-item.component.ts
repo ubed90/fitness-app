@@ -12,10 +12,10 @@ export class ListItemComponent implements OnInit {
   toggled = false;
 
   @Input()
-  item!: Meal;
+  item!: any;
 
   @Output()
-  remove = new EventEmitter<Meal>()
+  remove = new EventEmitter<any>()
 
   constructor() { }
 
