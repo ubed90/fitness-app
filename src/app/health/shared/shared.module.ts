@@ -6,12 +6,16 @@ import { MealsService } from './services/meals/meals.service';
 import { ListItemComponent } from './components/list-item/list-item.component';
 import { WorkoutsService } from './services/workouts/workouts.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { JoinPipe } from './pipes/join-pipe/join.pipe';
+import { WorkoutPipe } from './pipes/workout-pipe/workout.pipe';
 
 
 
 @NgModule({
   declarations: [
-    ListItemComponent
+    ListItemComponent,
+    JoinPipe,
+    WorkoutPipe
   ],
   imports: [
     CommonModule,
@@ -19,7 +23,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AngularFireDatabaseModule,
     ReactiveFormsModule
   ],
-  exports: [ListItemComponent, ReactiveFormsModule]
+  exports: [ListItemComponent, ReactiveFormsModule, JoinPipe, WorkoutPipe]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders<SharedModule> {
