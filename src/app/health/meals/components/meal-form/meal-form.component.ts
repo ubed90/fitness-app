@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Meal } from 'src/app/health/shared/services/meals/meals.service';
 
@@ -8,10 +8,22 @@ import { Meal } from 'src/app/health/shared/services/meals/meals.service';
   templateUrl: './meal-form.component.html',
   styleUrls: ['./meal-form.component.scss']
 })
-export class MealFormComponent implements OnInit {
+export class MealFormComponent implements OnInit, OnChanges {
+
+  toggled = false;
+  exists = false;
+
+  @Input()
+  meal!: Meal;
 
   @Output()
-  create = new EventEmitter<any>()
+  create = new EventEmitter<Meal>()
+
+  @Output()
+  update = new EventEmitter<Meal>()
+
+  @Output()
+  remove = new EventEmitter<Meal>()
 
 
   form = this.fb.group({
@@ -20,6 +32,29 @@ export class MealFormComponent implements OnInit {
   })
 
   constructor(private fb: FormBuilder) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // if(changes.meal.currentValue.name) {
+    //   this.exists = true;
+    // }
+
+    if(this.meal && this.meal.name) {
+      this.exists = true;
+
+      const value  = this.meal
+
+      this.form.patchValue(value);
+
+      this.emptyIngredients();
+
+
+      if(value.ingredients) {
+        for(const item of value.ingredients) {
+          this.ingredients.push(new FormControl(item));
+        }
+      }
+    }
+  }
 
   ngOnInit(): void {
   }
@@ -44,7 +79,35 @@ export class MealFormComponent implements OnInit {
   }
 
   createMeal() {
-    this.create.emit(this.form.value)
+    if(this.form.valid) {
+      this.create.emit({
+        name: this.form.value.name as string,
+        ingredients: this.form.value.ingredients as string[]
+      })
+    }
+  }
+
+  updateMeal() {
+    if(this.form.valid) {
+      this.update.emit({
+        name: this.form.value.name as string,
+        ingredients: this.form.value.ingredients as string[]
+      })
+    }
+  }
+
+  removeMeal() {
+    this.remove.emit(this.meal)
+  }
+
+  toggle() {
+    this.toggled = !this.toggled;
+  }
+
+  emptyIngredients() {
+    while(this.ingredients.controls.length) {
+      this.ingredients.removeAt(0);
+    }
   }
 
 }

@@ -27,4 +27,8 @@ export class MealsComponent implements OnInit, OnDestroy {
     }
   }
 
+  async removeMeal(meal: Meal) {
+    await this.mealService.removeMeal(meal.$key as string);
+  }
+
 }
