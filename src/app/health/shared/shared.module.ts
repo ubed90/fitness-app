@@ -8,6 +8,7 @@ import { WorkoutsService } from './services/workouts/workouts.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JoinPipe } from './pipes/join-pipe/join.pipe';
 import { WorkoutPipe } from './pipes/workout-pipe/workout.pipe';
+import { ScheduleService } from './services/schedule/schedule.service';
 
 
 
@@ -29,7 +30,7 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
-      providers: [MealsService, WorkoutsService]
+      providers: [MealsService, WorkoutsService, ScheduleService]
     }
   }
 }
