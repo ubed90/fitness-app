@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, map, tap } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Store } from 'store';
 import { Meal } from '../meals/meals.service';
@@ -30,6 +30,17 @@ export class ScheduleService {
 
   private date$ = new BehaviorSubject<Date>(new Date());
 
+  private section$ = new Subject();
+
+  selected$ = this.section$.pipe(
+    tap((next: any) => this.store.set('selected', next))
+  )
+
+  list$ = this.section$.pipe(
+    map((value: any) => this.store.value[value.type]),
+    tap((next: any) => this.store.set('list', next))
+  )
+
   schedule$: Observable<any> = this.date$.pipe(
     tap(next => {
       this.store.set('date', next)
@@ -59,6 +70,7 @@ export class ScheduleService {
         }
       }
 
+      console.log(mapped);
       return mapped
     }),
     tap(next => {
@@ -86,5 +98,10 @@ export class ScheduleService {
     return this.db.list(`schedule/${this.uid}` , (ref) => {
       return ref.orderByChild('timestamp').startAt(startAt).endAt(endAt)
     })
+  }
+
+
+  selectSection(event: any) {
+    this.section$.next(event)
   }
 }

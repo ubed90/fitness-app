@@ -10,6 +10,8 @@ export interface State {
   meals: Meal[] | undefined,
   date: Date | undefined,
   schedule: ScheduleItem[] | undefined,
+  selected: any,
+  list: any,
   workouts: Workout[] | undefined,
   [key: string]: any,
 }
@@ -19,7 +21,9 @@ const state: State = {
   meals: undefined,
   workouts: undefined,
   date: undefined,
-  schedule: undefined
+  schedule: undefined,
+  selected: undefined,
+  list: undefined
 };
 
 export class Store {
