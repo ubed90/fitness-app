@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, map, tap } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
 import { Store } from 'store';
 import { Meal } from '../meals/meals.service';
 import { Workout } from '../workouts/workouts.service';
@@ -32,6 +32,8 @@ export class ScheduleService {
 
   private section$ = new Subject();
 
+  private itemList$ = new Subject();
+
   selected$ = this.section$.pipe(
     tap((next: any) => this.store.set('selected', next))
   )
@@ -39,6 +41,38 @@ export class ScheduleService {
   list$ = this.section$.pipe(
     map((value: any) => this.store.value[value.type]),
     tap((next: any) => this.store.set('list', next))
+  )
+
+  items$ = this.itemList$.pipe(
+    withLatestFrom(this.section$),
+    map(([items , section]: any[]) => {
+
+      console.log(section , items);
+      const id = section.data.$key;
+
+      const defaults: ScheduleItem = {
+        workouts: [],
+        meals: [],
+        section: section.section,
+        timestamp: new Date(section.day).getTime()
+      };
+
+      const payLoad = {
+        ...(id ? section.data : defaults),
+        ...items
+      };
+
+      console.log(payLoad);
+      console.log(id);
+
+      if(id) {
+        delete payLoad.$key
+        return this.updateSection(id, payLoad)
+      }
+
+      return this.createSection(payLoad);
+
+    })
   )
 
   schedule$: Observable<any> = this.date$.pipe(
@@ -59,14 +93,22 @@ export class ScheduleService {
       return { startAt , endAt }
     }),
     switchMap(({ startAt, endAt }: any) => {
-      return this.getSchedule(startAt, endAt).valueChanges();
+      return this.getSchedule(startAt, endAt);
     }),
     map((data: any) => {
       const mapped: ScheduleList = {};
 
+      console.log(data);
+      
+
       for(const prop of data) {
-        if(!mapped[prop.section]) {
-          mapped[prop.section] = prop;
+        if(!mapped[prop.data.section]) {
+          mapped[prop.data.section] = {
+            $key: prop.$key,
+            ...prop.data
+          }
+        } else {
+          mapped[prop.data.section] = { ...mapped[prop.data.section], ...prop.data }
         }
       }
 
@@ -97,11 +139,32 @@ export class ScheduleService {
   private getSchedule(startAt: number, endAt: number) {
     return this.db.list(`schedule/${this.uid}` , (ref) => {
       return ref.orderByChild('timestamp').startAt(startAt).endAt(endAt)
-    })
+    }).snapshotChanges().pipe(
+      map((snapshots) => {
+        return snapshots.map((snapshot) => ({
+          $key: snapshot.key,
+          data: snapshot.payload.val()
+        }))
+      })
+    )
   }
 
 
   selectSection(event: any) {
     this.section$.next(event)
+  }
+
+  updateItems(items: string[]) {
+    this.itemList$.next(items);
+  }
+
+
+  private createSection(payLoad: ScheduleItem) {
+    console.log("Create Triggered");
+    return this.db.list(`schedule/${this.uid}`).push(payLoad);
+  }
+
+  private updateSection(key: string, payLoad:ScheduleItem) {
+    return this.db.object<ScheduleItem>(`schedule/${this.uid}/${key}`).update(payLoad);
   }
 }
